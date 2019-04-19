@@ -1,0 +1,62 @@
+.input_div {
+    width:50%;
+    height:200px;
+    background-color:#1e85ae;
+    border: 3px solid;
+    border-color: white;
+    border-radius:20px;
+    -moz-border-radius:20px; /*old firefox*/
+    position:relative;
+}
+.input_div p{
+    color:white;
+    font-size:1.5em;
+    font-family: Arial, Verdana, sans-serif;
+    position:absolute;
+    top:60px;
+    left:26%;
+    
+}
+
+.feature_option {
+
+    width:30%;
+    height:3em;
+    background-color:#24b8f9;
+    color:white;
+    border-radius:15px;
+    border-width: 0px;
+    font-family: Arial, Verdana, sans-serif;
+
+
+
+}
+
+.feature_option:hover{
+
+    background-color:#1e85ae;
+    cursor: pointer;
+
+}
+
+
+.sub_feature_option {
+
+    width:30%;
+    height:3em;
+    background-color:#FFB6C1;
+    color:white;
+    border-radius:15px;
+    border-width: 0px;
+    font-family: Arial, Verdana, sans-serif;
+
+
+
+}
+
+.sub_feature_option:hover{
+
+    background-color:#FF1493;
+    cursor: pointer;
+
+}
