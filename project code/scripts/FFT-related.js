@@ -56,16 +56,48 @@ ComplexNumber.prototype.show_complex_num = function()
 	return cstr;
 }
 
-ComplexNumber.prototype.get_modulus=function()
+ComplexNumber.prototype.get_modulus_square=function()
 {
 	return this.re * this.re + this.im * this.im;
 }
-ComplexNumber.prototype.get_value_in_dB=function()
+ComplexNumber.prototype.get_modulus=function()
 {
-	return 20*(Math.log(this.re * this.re + this.im * this.im)/Math.log(10));
+	return Math.sqrt(this.re * this.re + this.im * this.im);
+}
+ComplexNumber.prototype.get_value_in_dB_normalised=function(N)
+{	
+	//normalized bin magnitude
+	//	var norm_bin_mag=2*this.get_modulus()/N;
+	//  return 20.0*(Math.log(norm_bin_mag)/Math.log(10));
+	return	10*(Math.log(4*this.get_modulus_square()/(N*N))/Math.log(10));
+}
+ComplexNumber.prototype.log_energy=function()
+{	
+
+	return	10*log10(2*this.get_modulus_square());
+
+}
+
+ComplexNumber.prototype.psd=function(time_dur){
+	//one-sided power spectral density
+	//http://www.fon.hum.uva.nl/praat/manual/power_spectral_density.html
+	
+	var psd=2*(this.get_modulus_square())/time_dur;
+	return psd;
+}
+
+ComplexNumber.prototype.get_PSD=function(time_dur){
+	//one-sided power spectral density
+	//http://www.fon.hum.uva.nl/praat/manual/power_spectral_density.html
+	//var Pref=2e-5;
+	var praat_dB=10*log10(this.psd(time_dur)/4e-10);
+	return praat_dB;
 }
 
 
+function log10(value){
+	return Math.log(value)/Math.log(10.0);
+}
 
 
 function FFT(frame_data){

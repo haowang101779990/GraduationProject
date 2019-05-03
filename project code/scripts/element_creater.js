@@ -24,6 +24,12 @@ function add_button(panel_div, btn_id, btn_panel_id, btn_value){
 
 }
 
+function label_adder(parente,contents){
+    var label=document.createElement("label");
+    label.innerText=contents;
+    parente.appendChild(label);
+}
+
 
 
 
@@ -93,14 +99,14 @@ function draw_coord(c,ctx){
     
 }
 
-function draw_spec_coord(c,ctx,y_dB_zero,max_dB){
+function draw_spec_coord(c,ctx,y_dB_zero,max_dB,d_range,left_padding){
     // y=0
     ctx.beginPath();
 
     
-    ctx.moveTo(0,c.height);
+    ctx.moveTo(left_padding,c.height);
     ctx.lineTo(c.width, c.height);
-    ctx.strokeStyle="blue";
+    ctx.strokeStyle="red";
     ctx.globalCompositeOperation="source-over";
     ctx.stroke(); 
     ctx.closePath();
@@ -109,9 +115,9 @@ function draw_spec_coord(c,ctx,y_dB_zero,max_dB){
     ctx.beginPath();
 
 
-    ctx.moveTo(0,0);
-    ctx.lineTo(0,c.height);
-    ctx.strokeStyle="blue";
+    ctx.moveTo(left_padding,0);
+    ctx.lineTo(left_padding,c.height);
+    ctx.strokeStyle="red";
     ctx.globalCompositeOperation="source-over";
     ctx.stroke(); 
     ctx.closePath();
@@ -121,7 +127,7 @@ function draw_spec_coord(c,ctx,y_dB_zero,max_dB){
     ctx.beginPath();
 
 
-    ctx.moveTo(0,y_dB_zero);
+    ctx.moveTo(left_padding,y_dB_zero);
     ctx.lineTo(c.width,y_dB_zero);
     ctx.strokeStyle="blue";
     ctx.globalCompositeOperation="source-over";
@@ -132,16 +138,28 @@ function draw_spec_coord(c,ctx,y_dB_zero,max_dB){
     ctx.beginPath();
 
     
-    ctx.moveTo(0,0);
-    ctx.lineTo(7, 0);
-    ctx.strokeStyle="blue";
+    ctx.moveTo(left_padding,0);
+    ctx.lineTo(left_padding+7, 0);
+    ctx.strokeStyle="red";
     ctx.globalCompositeOperation="source-over";
     ctx.stroke(); 
     ctx.closePath();
 
     ctx.textBaseline="top";
     ctx.font="15px Arial";
-    ctx.fillText(max_dB,8,0);   
+    ctx.fillText(max_dB.toFixed(2)+" dB",0,0);  
+    
+    ctx.textBaseline="top";
+    ctx.font="15px Arial";
+    ctx.fillText((max_dB-d_range).toFixed(2)+" dB",0,c.height-15);  
+
+    ctx.moveTo(c.width,c.height);
+    ctx.lineTo(c.width, 0);
+    ctx.strokeStyle="red";
+    ctx.globalCompositeOperation="source-over";
+    ctx.stroke(); 
+    ctx.closePath();
+    
 
 
 }

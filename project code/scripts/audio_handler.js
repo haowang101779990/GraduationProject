@@ -90,13 +90,33 @@ function audio_parser(audio_file){
 
                         var windowTypes=['Rectangular','Hamming','Hann'];
                         for(var i=0;i<windowTypes.length;i++){
-                            windowTypeSelect.options.add(new Option(windowTypes[i],windowTypes[i]))
-
+                            windowTypeSelect.options.add(new Option(windowTypes[i],windowTypes[i]));
                         }
 
                         select_p.appendChild(windowTypeSelect);
 
                 spec_ctrl_panel.appendChild(select_p);
+
+
+                var select_p_spectype=document.createElement("p");
+                select_p_spectype.innerHTML+="<label>Select Spectrum Type: &nbsp</label>";
+                
+                        /*select spectrum type*/ 
+                        var SpectrumTypeSelect = document.createElement("select");
+                        SpectrumTypeSelect.style="font-size:1.5em";
+                        SpectrumTypeSelect.id = "SpectrumTypeSelect";
+                        
+                        
+
+                        var SpectrumTypes=['Power Spectrum Density (lg)','Energy (lg)'];
+                        for(var i=0;i<SpectrumTypes.length;i++){
+                            SpectrumTypeSelect.options.add(new Option(SpectrumTypes[i],SpectrumTypes[i]));
+                        }
+
+                        select_p_spectype.appendChild(SpectrumTypeSelect);
+
+                spec_ctrl_panel.appendChild(select_p_spectype);
+
 
 
                 var input_fl_p=document.createElement("p");
@@ -136,6 +156,22 @@ function audio_parser(audio_file){
 
                 spec_ctrl_panel.appendChild(input_dr_p);
 
+
+                var preamphasis_check_p=document.createElement("p");
+                
+                        
+                        var pps_checkbox = document.createElement("input");
+                        pps_checkbox.type="checkbox";
+                        pps_checkbox.id ="pps_checkbox";
+                        pps_checkbox.value="true";
+                        preamphasis_check_p.appendChild(pps_checkbox);
+                        label_adder(preamphasis_check_p,"Perform Preamphasis(a=0.98) ? :");
+                        
+                        
+
+                spec_ctrl_panel.appendChild(preamphasis_check_p);
+
+
                 var config_btn_p=document.createElement("p");
                 
                         /*lodge config*/ 
@@ -149,42 +185,18 @@ function audio_parser(audio_file){
 
                 spec_ctrl_panel.appendChild(config_btn_p);
 
-                spectrum(audio_buffer,'Rectangular',20,2,60);
+                
+
+
+                spectrum(audio_buffer,'Rectangular','Power Spectrum Density (lg)',20,5,60,false);
 
                 config_btn.onclick=function(){
-                    spectrum(audio_buffer,windowTypeSelect.value,parseInt(frameLengthInput.value),parseInt(frameNumInput.value),parseInt(DRInput.value));
+                    console.log(windowTypeSelect.value+","+frameLengthInput.value+","+frameNumInput.value+","+DRInput.value+","+pps_checkbox.checked);
+                    spectrum(audio_buffer,windowTypeSelect.value,SpectrumTypeSelect.value,parseInt(frameLengthInput.value),parseInt(frameNumInput.value),parseInt(DRInput.value),pps_checkbox.checked);
                 }
-                /*
-                windowTypeSelect.onchange=function(){
-
-                    spectrum(audio_buffer,windowTypeSelect.value,parseInt(frameLengthInput.value),parseInt(frameNumInput.value),parseInt(DRInput.value));
-               
-                }
-                
-                frameLengthInput.onchange=function(){
-                   
-                    spectrum(audio_buffer,windowTypeSelect.value,parseInt(frameLengthInput.value),parseInt(frameNumInput.value),parseInt(DRInput.value));
-                }
-                
-                frameNumInput.onchange=function(){
-
-                    spectrum(audio_buffer,windowTypeSelect.value,parseInt(frameLengthInput.value),parseInt(frameNumInput.value),parseInt(DRInput.value));
-                
-                }
-
-                DRInput.onchange=function(){
-
-                    spectrum(audio_buffer,windowTypeSelect.value,parseInt(frameLengthInput.value),parseInt(frameNumInput.value),parseInt(DRInput.value));
-                
-                }
-                */
-
-
-
-
-                    
                
             }
+
 
 
 
