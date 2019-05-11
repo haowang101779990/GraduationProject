@@ -10,12 +10,22 @@ ComplexNumber.prototype.add = function(other, result)
 	result.im = this.im + other.im;
 	return result;
 }
+ComplexNumber.prototype.add_on = function(other)
+{
+	this.re = this.re + other.re;
+	this.im = this.im + other.im;
+}
+
 
 ComplexNumber.prototype.sub = function(other, result)
 {
 	result.re = this.re - other.re;
 	result.im = this.im - other.im;
 	return result;
+}
+ComplexNumber.prototype.sub_real=function(other)
+{
+	this.re-=other;
 }
 
 ComplexNumber.prototype.complex_exp = function(result)

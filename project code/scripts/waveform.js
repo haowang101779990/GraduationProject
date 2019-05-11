@@ -149,7 +149,7 @@ function waveform(audio_buffer,zoom_ratio,zoom_start){
         let index_offset=Math.ceil((pos.x/c.width)*pixel_values.length);
 
         console.log(time);
-        cursor_info.innerHTML="Current time and sound amplitude : " +time+","+pixel_values[index_offset];
+        cursor_info.innerHTML="Current time and sound amplitude : " +time.toFixed(2)+","+pixel_values[index_offset].toFixed(2);
     }
 
 

@@ -63,7 +63,7 @@ function audio_parser(audio_file){
             } //btm-wf onclick
 
 
-           var spectrum_group=add_button(panel_div,'spectrum_btn','spectrum_panel','Generate Spectrum for this frame')
+           var spectrum_group=add_button(panel_div,'spectrum_btn','spectrum_panel','Generate Spectrum')
            
 
             

@@ -85,7 +85,7 @@ function spectrum(audio_buffer, windowType,specType,frame_length_time, frame_tot
             PCMArray[i]*=windowValues[i];
         }
 
-
+        var PCMArray_spare=PCMArray.slice(0);
 
     // alert(typeof PCMArray);
         
@@ -93,7 +93,6 @@ function spectrum(audio_buffer, windowType,specType,frame_length_time, frame_tot
         //doing FFT
         var freq_this_frame=FFT(PCMArray);
         
-        var freq_modulus=[];
         var freq_dB=[];
         console.log(specType)
         if(specType=='Power Spectrum Density (lg)'){
@@ -106,7 +105,7 @@ function spectrum(audio_buffer, windowType,specType,frame_length_time, frame_tot
                     freq_dB[i] = freq_this_frame[i].log_energy();
             }
         }
-        draw_spec(freq_dB,audio_buffer.sampleRate,frame_num,dynamic_range);
+        draw_spec(freq_dB,audio_buffer.sampleRate,frame_num,dynamic_range,PCMArray_spare);
         
 
 
@@ -117,8 +116,10 @@ function spectrum(audio_buffer, windowType,specType,frame_length_time, frame_tot
 
 }
 
-function draw_spec(freq_mod_data,sampleRate,frame_num,dynamic_range){
-
+function draw_spec(freq_mod_data,sampleRate,frame_num,dynamic_range,data_this_frame){
+    /*
+    freq mod data length:N/2
+    */
     let old_canvas_div=document.getElementById("spec_canvas_div_"+frame_num);
     if(old_canvas_div){
         old_canvas_div.remove();
@@ -150,18 +151,22 @@ function draw_spec(freq_mod_data,sampleRate,frame_num,dynamic_range){
     var max_mod=getMax(freq_mod_data);
     var y_dB_zero=Math.ceil(max_mod/y_dB_per_pixel);
 	console.log(max_mod);
-	var db_per_pixel=max_mod/c.height;
-    console.log(db_per_pixel);
+
     
+    /*
+
+    coord and envelop from lpc
+    */
+
     draw_spec_coord(c,ctx,y_dB_zero,max_mod,dynamic_range,left_padding);
+    var formants_and_bdw=LPC_spectrum_evlp(ctx,c,left_padding,data_this_frame,sampleRate);
     console.log(y_dB_zero);
     
     var last_draw_at_y=y_dB_zero;
 	for(var i=0;i<freq_mod_data.length/2;i++){
-        let draw_at_y = Math.ceil((max_mod-freq_mod_data[i])/db_per_pixel);
+        let draw_at_y = Math.ceil((max_mod-freq_mod_data[i])/y_dB_per_pixel);
 		console.log(i+" "+freq_mod_data[i]);
-		//ctx.fillStyle = "#FFFFF";
-		//ctx.fillRect(i*10,draw_at_y,2,2);
+
 		ctx.beginPath();
         ctx.strokeStyle="black";
         if(i>0){
@@ -184,9 +189,14 @@ function draw_spec(freq_mod_data,sampleRate,frame_num,dynamic_range){
 
     c.onclick=function(e){
         let pos=getMousePos(c,e);
-        let freq_offset=pos.x;
-        cursor_info.innerHTML="Current Freq: " +((freq_offset-left_padding)/freq_mod_data.length)*sampleRate/2;
-
+        let freq_offset=pos.x-left_padding;
+        console.log("freq_offset:"+freq_offset);
+        cursor_info.innerHTML="Current Freq: " +sampleRate*freq_offset/(freq_mod_data.length*2);
+        cursor_info.innerHTML+="<br>Formants in this frame: <br>" ;
+        var fnum=(formants_and_bdw.peaks.length>=5)?5:formants_and_bdw.peaks.length;
+        for(var i=0;i<fnum;i++){
+            cursor_info.innerHTML+="F"+i+":"+formants_and_bdw.peaks[i].toFixed(2)+"      "+"Bandwidth "+i+":"+formants_and_bdw.bandwidth[i].toFixed(2)+"<br>";
+        }
     }
 
 
@@ -194,8 +204,56 @@ function draw_spec(freq_mod_data,sampleRate,frame_num,dynamic_range){
 }
 
 
-function LPC_spectrum_evlp_draw(ctx,c,data){
+function LPC_spectrum_evlp(ctx,c,left_padding,data,fs){
+    console.log("data: "+data);
+    var p=20;
+    var lpc_result=LPC_to_evlp(data,p);
+    console.log("lpc_result:  "+lpc_result);
+    
+    var formants_and_b=getPeaks_and_bdw(lpc_result,fs/data.length);
+    var formants=formants_and_b.peaks;
 
+    
+    for(var i=0;i<formants.length;i++){
+        
+        ctx.beginPath();
+        console.log("formants i:"+formants[i]);
+        ctx.moveTo(formants[i]+left_padding,c.height);
+        ctx.lineTo(formants[i]+left_padding,0);
+        ctx.strokeStyle="red";
+        ctx.globalCompositeOperation="source-over";
+        ctx.stroke(); 
+
+        ctx.closePath();
+        
+
+
+        formants[i]=(formants[i]/data.length)*fs;
+    }
+
+    console.log("formants:" +formants);
+    return formants_and_b;
+    
+
+}
+
+function getPeaks_and_bdw(data,bin){
+    var peaks=[];
+    var bandwidth=[];
+    for(var i=2;i<data.length-1;i++){
+        if(i==0)
+            continue;
+        if(data[i-2]<data[i-1]&&data[i-1]<data[i]&&data[i]>data[i+1]){
+            peaks.push(i);
+            var a=(data[i-1]+data[i+1]-2*data[i])/2;
+            var b=(data[i+1]-data[i-1])/2;
+            var c=data[i];
+            var P=-(b*b)/(4*a)+c;
+            var B=-1/a*bin*(Math.sqrt(b*b-4*a*(c-0.5*P)))
+            bandwidth.push(B);
+        }
+    }
+    return {peaks:peaks,bandwidth:bandwidth};
 }
 
 
