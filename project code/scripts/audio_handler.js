@@ -108,7 +108,7 @@ function audio_parser(audio_file){
                         
                         
 
-                        var SpectrumTypes=['Power Spectrum Density (lg)','Energy (lg)'];
+                        var SpectrumTypes=['Praat Power Spectrum Density','Periodic Diagram Welch','square of modulus 10lg'];
                         for(var i=0;i<SpectrumTypes.length;i++){
                             SpectrumTypeSelect.options.add(new Option(SpectrumTypes[i],SpectrumTypes[i]));
                         }
@@ -165,11 +165,39 @@ function audio_parser(audio_file){
                         pps_checkbox.id ="pps_checkbox";
                         pps_checkbox.value="true";
                         preamphasis_check_p.appendChild(pps_checkbox);
-                        label_adder(preamphasis_check_p,"Perform Preamphasis(a=0.98) ? :");
+                        label_adder(preamphasis_check_p,"Perform Preamphasis(a=0.98) ? ");
                         
                         
 
                 spec_ctrl_panel.appendChild(preamphasis_check_p);
+
+                var elp_check_p=document.createElement("p");
+                
+                        
+                        var elp_checkbox = document.createElement("input");
+                        elp_checkbox.type="checkbox";
+                        elp_checkbox.id ="elp_checkbox";
+                        elp_checkbox.value="true";
+                        elp_check_p.appendChild(elp_checkbox);
+                        label_adder(elp_check_p,"draw ESTIMATED envelope?");
+                        
+                        
+
+                spec_ctrl_panel.appendChild(elp_check_p);
+
+                var fm_check_p=document.createElement("p");
+                
+                        
+                        var fm_checkbox = document.createElement("input");
+                        fm_checkbox.type="checkbox";
+                        fm_checkbox.id ="elp_checkbox";
+                        fm_checkbox.value="true";
+                        fm_check_p.appendChild(fm_checkbox);
+                        label_adder(fm_check_p,"Visualise Formants?");
+                        
+                        
+
+                spec_ctrl_panel.appendChild(fm_check_p);
 
 
                 var config_btn_p=document.createElement("p");
@@ -188,11 +216,11 @@ function audio_parser(audio_file){
                 
 
 
-                spectrum(audio_buffer,'Rectangular','Power Spectrum Density (lg)',20,5,60,false);
+                spectrum(audio_buffer,'Rectangular','Praat Power Spectrum Density',20,5,60,false,false,false);
 
                 config_btn.onclick=function(){
                     console.log(windowTypeSelect.value+","+frameLengthInput.value+","+frameNumInput.value+","+DRInput.value+","+pps_checkbox.checked);
-                    spectrum(audio_buffer,windowTypeSelect.value,SpectrumTypeSelect.value,parseInt(frameLengthInput.value),parseInt(frameNumInput.value),parseInt(DRInput.value),pps_checkbox.checked);
+                    spectrum(audio_buffer,windowTypeSelect.value,SpectrumTypeSelect.value,parseInt(frameLengthInput.value),parseInt(frameNumInput.value),parseInt(DRInput.value),pps_checkbox.checked,elp_checkbox.checked,fm_checkbox.checked);
                 }
                
             }

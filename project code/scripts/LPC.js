@@ -101,6 +101,7 @@ function LPC_to_evlp(signal,p){
     //var lpc_ar_freq=FFT(lpc_coef.ar);
     var result=[];
 
+    /*
     var w_cst=(-2*Math.PI)/N;
 
     for(var k=0;k<N/2;k++){
@@ -115,6 +116,23 @@ function LPC_to_evlp(signal,p){
         result[k]=lpc_coef.G*lpc_coef.G/csum.get_modulus_square();
         //result[k]=1/csum.get_modulus_square();
     }
+    */
+   
+   for(var k=0;k<N;k++){
+        result[k]=0;
+   }
+
+   for(var i=0;i<lpc_coef.ar.length;i++){
+         result[i]=lpc_coef.ar[i];  
+    }
+    console.log("arguments result padded:"+result);
+    result=FFT(result);
+
+    for(var k=0;k<N/2;k++){
+        result[k].sub_real(1);
+        result[k]=lpc_coef.G*lpc_coef.G/result[k].get_modulus_square();
+    }
+    
 
 
     return result;

@@ -99,14 +99,35 @@ function draw_coord(c,ctx){
     
 }
 
-function draw_spec_coord(c,ctx,y_dB_zero,max_dB,d_range,left_padding){
-    // y=0
+function Round(a){
+    a= Math.floor(a*100)/100;
+    return a;
+}
+
+function draw_spec_coord(c,ctx,y_dB_zero,max_dB,d_range,left_padding,right_padding,top_padding,bottom_padding,f_max,title){
+    var actual_height=c.height-bottom_padding-top_padding;
+    var graph_bottom=c.height-bottom_padding;
+    var actual_width=c.width-left_padding-right_padding;
+    var graph_rightest=c.width-right_padding;
+
+    // y=0 (mathmatic coord)
     ctx.beginPath();
 
     
-    ctx.moveTo(left_padding,c.height);
-    ctx.lineTo(c.width, c.height);
-    ctx.strokeStyle="red";
+    ctx.moveTo(left_padding,graph_bottom);
+    ctx.lineTo(c.width-right_padding, graph_bottom);
+    ctx.strokeStyle="grey";
+    ctx.globalCompositeOperation="source-over";
+    ctx.stroke(); 
+    ctx.closePath();
+
+    // top y line
+    ctx.beginPath();
+
+    
+    ctx.moveTo(left_padding,top_padding);
+    ctx.lineTo(graph_rightest, top_padding);
+    ctx.strokeStyle="grey";
     ctx.globalCompositeOperation="source-over";
     ctx.stroke(); 
     ctx.closePath();
@@ -115,51 +136,111 @@ function draw_spec_coord(c,ctx,y_dB_zero,max_dB,d_range,left_padding){
     ctx.beginPath();
 
 
-    ctx.moveTo(left_padding,0);
-    ctx.lineTo(left_padding,c.height);
-    ctx.strokeStyle="red";
+    ctx.moveTo(left_padding,top_padding);
+    ctx.lineTo(left_padding,graph_bottom);
+    ctx.strokeStyle="grey";
     ctx.globalCompositeOperation="source-over";
     ctx.stroke(); 
     ctx.closePath();
 
 
-    //y_dB=0
-    ctx.beginPath();
 
 
-    ctx.moveTo(left_padding,y_dB_zero);
-    ctx.lineTo(c.width,y_dB_zero);
-    ctx.strokeStyle="blue";
+    //x right line
+    ctx.moveTo(graph_rightest,top_padding);
+    ctx.lineTo(graph_rightest,graph_bottom);
+    ctx.strokeStyle="grey";
     ctx.globalCompositeOperation="source-over";
     ctx.stroke(); 
     ctx.closePath();
 
-    //y ruler
-    ctx.beginPath();
+
+    // y ruler
+    var counter_y=0;
+    for(var i=top_padding;i<=actual_height+top_padding;){
+        var db_bin=actual_height/10;
+        var db_bin_value=d_range/10;
+
+        ctx.beginPath(); 
+        ctx.moveTo(left_padding,i);
+        ctx.lineTo(left_padding-12, i);
+        ctx.strokeStyle="grey";
+        ctx.globalCompositeOperation="source-over";
+        ctx.stroke(); 
+        ctx.closePath();
+
+        ctx.beginPath(); 
+        ctx.moveTo(left_padding,i);
+        ctx.lineTo(graph_rightest, i);
+        ctx.strokeStyle="#D8D8D8";
+        ctx.globalCompositeOperation="source-over";
+        ctx.stroke(); 
+        ctx.closePath();
+
+        ctx.textBaseline="top";
+        ctx.font="15px Arial";
+        ctx.fillText((max_dB-counter_y*db_bin_value).toFixed(2)+" dB",left_padding-80,i); 
+        counter_y++;
+        i+=db_bin; 
+
+    }
 
     
-    ctx.moveTo(left_padding,0);
-    ctx.lineTo(left_padding+7, 0);
-    ctx.strokeStyle="red";
+
+    //x ruler
+    ctx.beginPath(); 
+    ctx.moveTo(c.width-right_padding,actual_height);
+    ctx.lineTo(c.width-right_padding,actual_height+12);
+    ctx.strokeStyle="grey";
     ctx.globalCompositeOperation="source-over";
     ctx.stroke(); 
     ctx.closePath();
 
     ctx.textBaseline="top";
     ctx.font="15px Arial";
-    ctx.fillText(max_dB.toFixed(2)+" dB",0,0);  
+    ctx.fillText((f_max/1000).toFixed(2)+" kHz",graph_rightest-20,graph_bottom+13); 
     
-    ctx.textBaseline="top";
-    ctx.font="15px Arial";
-    ctx.fillText((max_dB-d_range).toFixed(2)+" dB",0,c.height-15);  
 
-    ctx.moveTo(c.width,c.height);
-    ctx.lineTo(c.width, 0);
-    ctx.strokeStyle="red";
-    ctx.globalCompositeOperation="source-over";
-    ctx.stroke(); 
-    ctx.closePath();
+    var counter=0;
+    var scale_num=actual_width/64;
+    for(var i=left_padding;i<left_padding+actual_width;){
+        var coord_bin=64;
+        var coord_bin_freq=f_max/scale_num/1000;
+        
+        
+
+        ctx.beginPath(); 
+        ctx.moveTo(i,graph_bottom);
+        ctx.lineTo(i,graph_bottom+12);
+        ctx.strokeStyle="grey";
+        ctx.globalCompositeOperation="source-over";
+        ctx.stroke(); 
+        ctx.closePath();
+
+        ctx.beginPath(); 
+        ctx.moveTo(i,graph_bottom);
+        ctx.lineTo(i,top_padding);
+        ctx.strokeStyle="#D8D8D8";
+        ctx.globalCompositeOperation="source-over";
+        ctx.stroke(); 
+        ctx.closePath();
+        
+        ctx.textBaseline="top";
+        ctx.font="15px Arial";
+        ctx.fillText((coord_bin_freq*counter).toFixed(2),i-15,graph_bottom+13);
+        i+=coord_bin;
+        counter++; 
+    }
     
+
+    //title
+    ctx.textBaseline="top";
+    ctx.textAlign="center";
+    ctx.font="bolder 20px Arial ";
+    ctx.fillText(title,Math.ceil(left_padding+actual_width/2),top_padding-25);
+    
+    
+
 
 
 }

@@ -81,26 +81,20 @@ ComplexNumber.prototype.get_value_in_dB_normalised=function(N)
 	//  return 20.0*(Math.log(norm_bin_mag)/Math.log(10));
 	return	10*(Math.log(4*this.get_modulus_square()/(N*N))/Math.log(10));
 }
-ComplexNumber.prototype.log_energy=function()
+ComplexNumber.prototype.PeriodDiagram=function(N)
 {	
 
-	return	10*log10(2*this.get_modulus_square());
+	return	10*log10(this.get_modulus_square()/N);
 
 }
 
-ComplexNumber.prototype.psd=function(time_dur){
-	//one-sided power spectral density
-	//http://www.fon.hum.uva.nl/praat/manual/power_spectral_density.html
-	
-	var psd=2*(this.get_modulus_square())/time_dur;
-	return psd;
-}
 
-ComplexNumber.prototype.get_PSD=function(time_dur){
+ComplexNumber.prototype.get_PSD=function(time,f_bin){
 	//one-sided power spectral density
 	//http://www.fon.hum.uva.nl/praat/manual/power_spectral_density.html
 	//var Pref=2e-5;
-	var praat_dB=10*log10(this.psd(time_dur)/4e-10);
+  var psd=(2*(this.get_modulus_square()))*f_bin/time;
+	var praat_dB=10*log10(psd/4e-10);
 	return praat_dB;
 }
 
