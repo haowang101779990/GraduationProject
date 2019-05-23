@@ -23,10 +23,7 @@ ComplexNumber.prototype.sub = function(other, result)
 	result.im = this.im - other.im;
 	return result;
 }
-ComplexNumber.prototype.sub_real=function(other)
-{
-	this.re-=other;
-}
+
 
 ComplexNumber.prototype.complex_exp = function(result)
 {
@@ -62,7 +59,7 @@ ComplexNumber.prototype.show_complex_num = function()
 	}else{
 		cstr=this.re;
 	}
-	console.log(cstr);
+	//console.log(cstr);
 	return cstr;
 }
 
@@ -186,73 +183,7 @@ function IFFT(amplitudes)
 	return amplitudes;
 }
 
-/*
-function draw_spec_test(freq_mod_data){
 
-	var wf_canvas_div=document.createElement('div');
-  wf_canvas_div.id="wf_canvas_div";
-	wf_canvas_div.style.overflow="auto";
-	
-	document.getElementById("fftdraw").appendChild(wf_canvas_div);
-
-	var c = document.createElement("canvas");
-	c.width=freq_mod_data.length;
-	c.height=100;
-	var ctx = c.getContext("2d");
-
-	wf_canvas_div.appendChild(c);
-	
-
-	var max_mod=getMax(freq_mod_data);
-	console.log(max_mod);
-	var db_per_pixel=max_mod/c.height;
-	console.log(db_per_pixel);
-	
-	for(var i=0;i<freq_mod_data.length;i++){
-		let draw_at_y = Math.ceil(c.height -  freq_mod_data[i]/db_per_pixel);
-		console.log(draw_at_y)
-		//ctx.fillStyle = "#FFFFF";
-		//ctx.fillRect(i*10,draw_at_y,2,2);
-		ctx.beginPath();
-    ctx.strokeStyle="black";
-    ctx.moveTo(i, draw_at_y);
-    ctx.lineTo(i, c.height);
-    ctx.stroke(); 
-	}
-
-
-}
-
-function test(frame){
-	for(var i=0;i<5;i++){
-		test_array.push(0);
-		test_array.push(0);
-		test_array.push(1);
-		test_array.push(1);
-	}
-	var freq_modular_data=[];
-	frame_padding(frame);
-	var freq_data = FFT(frame);
-	var test_str="[ ";
-	for(var i=0;i<freq_data.length;i++){
-		//test_str+=freq_data[i].show_complex_num()+" ";
-		test_str+=freq_data[i].get_modulus()+" ,";
-		freq_modular_data.push(freq_data[i].get_modulus());
-	}
-	test_str+=" ]";
-	draw_spec_test(freq_modular_data);
-	return test_str;
-
-
-}
-//console.log(44100/1000*20)
-//console.log(test([1,2,-1,3]))
-var test_array=[];
-
-window.onload=function(){
-	console.log(test(test_array));
-}
-//*/
 
 function frame_padding(frame){
 	 /* pad frame to make it have length= 2^r */

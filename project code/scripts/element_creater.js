@@ -24,11 +24,20 @@ function add_button(panel_div, btn_id, btn_panel_id, btn_value){
 
 }
 
-function label_adder(parente,contents){
+function label_adder(parente,forwhom,contents){
     var label=document.createElement("label");
+    label.className="checkbox_label";
+    label.htmlFor=forwhom;
     label.innerText=contents;
     parente.appendChild(label);
 }
+
+function two_cols_tr(ptable,th,td){
+    var tr1=document.createElement("tr");
+    tr1.innerHTML+="<th>"+th+"</th>"+"<td>"+td+"</td>";
+    ptable.appendChild(tr1);
+}
+
 
 
 
@@ -245,3 +254,43 @@ function draw_spec_coord(c,ctx,y_dB_zero,max_dB,d_range,left_padding,right_paddi
 
 }
 
+function add_loader(parent){
+    /*
+    <div id="fade">
+                
+    </div>
+    <div id="modal">
+            <img id="loader" src="./styles/loading.gif" />
+    </div>
+        */
+    var fade = document.createElement("div");
+    fade.id="fade";
+
+    var modal = document.createElement("div");
+    modal.id="modal";
+
+    var img = document.createElement("img");
+    img.id="loader";
+    img.src="./styles/loading.gif";
+    modal.appendChild(img);
+
+    parent.appendChild(fade);
+    parent.appendChild(modal);
+
+
+    
+}
+
+
+function openModal() {
+    //console.log("open modal called");
+    document.getElementById('modal').style.display = 'block';
+    document.getElementById('fade').style.display = 'block';
+    
+}
+
+function closeModal() {
+    //console.log("close modal called");
+    document.getElementById('modal').style.display = 'none';
+    document.getElementById('fade').style.display = 'none';
+}

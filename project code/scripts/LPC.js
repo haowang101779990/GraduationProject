@@ -1,3 +1,6 @@
+
+
+
 /**
  * 
  * @param {Array} s signal data
@@ -17,7 +20,7 @@ function rota(s,p){
     for(var i=0;i<=p;i++){
         
         for(var n=0;n<N-i;n++){
-            Rp[i]+=s[n+i]*s[n];
+            Rp[i]+=s[n+i]*s[n]/N;
         }
         //console.log("Rp-in: "+Rp);
     }
@@ -81,42 +84,42 @@ function rota(s,p){
 
     /*
     epsilon=Rp[0];
+    
     for(var i=1;i<=p;i++){
         epsilon+=ar[i]*Rp[i];
     }
     epsilon/=N;
+
+    epsilonsub=Rp[0];
+    
+    for(var i=1;i<=p;i++){
+        epsilonsub-=ar[i]*Rp[i];
+    }
+    epsilonsub/=N;
     */
-    var G;
-    G=Math.sqrt(Ep[p]);
+    
+    //console.log("epsilon:"+epsilon);
+    console.log("Ep:"+Ep[p]);//levinson error ,tested in matlab, same
+
+    var G=Math.sqrt(Ep[p]);
+
+    
 
     return {ar: ar, G: G};
+
 }
 
 function LPC_to_evlp(signal,p){
-    console.log("signal:"+signal);
+    //console.log("signal:"+signal);
     var N=signal.length;
     var lpc_coef=rota(signal,p);
-    //frame_padding(lpc_coef.ar);
-    console.log("ar: "+lpc_coef.ar);
+    
+
+    show_array_data(lpc_coef.ar,"ar:\n");
+    console.log("Gain:"+lpc_coef.G);
     //var lpc_ar_freq=FFT(lpc_coef.ar);
     var result=[];
 
-    /*
-    var w_cst=(-2*Math.PI)/N;
-
-    for(var k=0;k<N/2;k++){
-        var w_k=w_cst*k;
-        var csum=new ComplexNumber(0,0);
-        for(var i=0;i<lpc_coef.ar.length;i++){
-                var wi=w_k*i;
-                var ae_jwi=new ComplexNumber(lpc_coef.ar[i]*Math.cos(wi),lpc_coef.ar[i]*Math.sin(wi));
-                csum.add_on(ae_jwi);
-        }
-        csum.sub_real(1);
-        result[k]=lpc_coef.G*lpc_coef.G/csum.get_modulus_square();
-        //result[k]=1/csum.get_modulus_square();
-    }
-    */
    
    for(var k=0;k<N;k++){
         result[k]=0;
@@ -126,15 +129,43 @@ function LPC_to_evlp(signal,p){
          result[i]=lpc_coef.ar[i];  
     }
     console.log("arguments result padded:"+result);
-    result=FFT(result);
+    var fft_result=FFT(result);
+    console.log(fft_result);
+    var result_mod=[];
 
     for(var k=0;k<N/2;k++){
-        result[k].sub_real(1);
-        result[k]=lpc_coef.G*lpc_coef.G/result[k].get_modulus_square();
+
+        result_mod.push(fft_result[k].get_modulus());
+        
+        fft_result[k]=lpc_coef.G/fft_result[k].get_modulus_square();
     }
+    console.log("result_mod:"+result_mod);
     
 
 
-    return result;
+    return fft_result;
 
+}
+
+function show_array_data(data,show_str){
+
+    var show_lines=Math.ceil(data.length/9);
+    var line_counter=0;
+    for(var i=0;i<data.length;i++){
+        if(i%9==0){
+
+            
+            line_counter++;
+            if(line_counter==show_lines){
+                show_str+="\n\n\n"+(i+1)+"th~"+data.length+"th :\n\n";
+            }else{
+                show_str+="\n\n\n"+(i+1)+"th~"+(i+9)+"th :\n\n";
+            }
+        }
+        
+
+        show_str+=(data[i]).toFixed(4)+"      ";
+        
+    }
+    console.log(show_str);
 }

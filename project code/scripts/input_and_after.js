@@ -58,14 +58,18 @@ window.onload=function(){
         var dt = event.dataTransfer;
         var files = dt.files;
 
-        
-
+        var valid=true;
+        var fn_struct=files[0].name.split(".");
+        var suffix=fn_struct[fn_struct.length-1];
+        if(suffix!="wav"){
+            alert("Please input a wav audio!");
+            valid=false;
+        }
         //clear_input_div
-        input_div.remove();
-
-        
-
-        create_option_panel(files[0]);
+        if(valid==true){
+            input_div.remove();
+            create_option_panel(files[0]);
+        }
 
 
     }, false);

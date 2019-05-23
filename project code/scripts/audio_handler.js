@@ -22,7 +22,7 @@ function audio_parser(audio_file){
             //-panel div
             //   -wf_panel : waveform btn, zoom ratio btn, zoom start btn, waveform
             //   -spctm panel:
-
+            
             var panel_div = document.createElement("div");
             document.body.appendChild(panel_div);
             panel_div.id="panel_div";
@@ -69,21 +69,38 @@ function audio_parser(audio_file){
             
             
             spectrum_group.this_btn.onclick=function(){
-               //alert("Generate Spectrum")
+              
 
                 spectrum_group.panel_with_this_btn.innerHTML="";
                 
-                
+                /*
+                -btn
+                -panel with this btn
+                    -ctrl panel
+                    -spec loader
+                        -loader divs
+                        -canvas group div
+                */
 
                 var spec_ctrl_panel=document.createElement("div");
+                spec_ctrl_panel.id="spec_ctrl_panel";
+                spec_ctrl_panel.className="ctrl_panel";
                 spectrum_group.panel_with_this_btn.appendChild(spec_ctrl_panel);
 
+                var spec_loader_panel=document.createElement("div");
+                spec_loader_panel.id="spec_loader";
+                spec_loader_panel.style.width="100%";
+                spec_loader_panel.style.position="relative";
+                spec_loader_panel.style.overflow="auto";
+                add_loader(spec_loader_panel);
+                spectrum_group.panel_with_this_btn.appendChild(spec_loader_panel);
+
                 var select_p=document.createElement("p");
-                select_p.innerHTML+="<label>Select Window Type: &nbsp</label>";
+                select_p.innerHTML+="<label class='textinputlabel'>Select Window Type : &nbsp</label>";
                 
                         /*select window type*/ 
                         var windowTypeSelect = document.createElement("select");
-                        windowTypeSelect.style="font-size:1.5em";
+                        windowTypeSelect.style="font-size:1.2em";
                         windowTypeSelect.id = "windowTypeSelect";
                         
                         
@@ -99,11 +116,11 @@ function audio_parser(audio_file){
 
 
                 var select_p_spectype=document.createElement("p");
-                select_p_spectype.innerHTML+="<label>Select Spectrum Type: &nbsp</label>";
+                select_p_spectype.innerHTML+="<label class='textinputlabel'>Select Spectrum Type : &nbsp</label>";
                 
                         /*select spectrum type*/ 
                         var SpectrumTypeSelect = document.createElement("select");
-                        SpectrumTypeSelect.style="font-size:1.5em";
+                        SpectrumTypeSelect.style="font-size:1.2em";
                         SpectrumTypeSelect.id = "SpectrumTypeSelect";
                         
                         
@@ -117,13 +134,26 @@ function audio_parser(audio_file){
 
                 spec_ctrl_panel.appendChild(select_p_spectype);
 
+                var input_fs_p=document.createElement("p");
+               
+                
+                        /*select window type*/ 
+                        input_fs_p.innerHTML+="<label class='textinputlabel'>draw Frame start at (s) :</label>";
+                        var framestartInput = document.createElement("input");
+                        framestartInput.placeholder="draw Frame start at (s):";
+                        framestartInput.type="text";
+                        framestartInput.id = "frameStartInput";
+                        framestartInput.value="0";
 
+                input_fs_p.appendChild(framestartInput);
+                spec_ctrl_panel.appendChild(input_fs_p);
 
                 var input_fl_p=document.createElement("p");
                 
                         /*select window type*/ 
-                        input_fl_p.innerHTML+="Frame Length in ms :";
+                        input_fl_p.innerHTML+="<label class='textinputlabel'>Frame Length in ms :</label>";
                         var frameLengthInput = document.createElement("input");
+                        frameLengthInput.type="text";
                         frameLengthInput.id = "frameLengthInput";
                         frameLengthInput.value="20";
 
@@ -134,8 +164,9 @@ function audio_parser(audio_file){
                 var input_fn_p=document.createElement("p");
                 
                         /*frame number  */
-                        input_fn_p.innerHTML+="The Number of frames to draw : ";
+                        input_fn_p.innerHTML+="<label class='textinputlabel'>The Number of frames to draw : </label>";
                         var frameNumInput = document.createElement("input");
+                        frameNumInput.type="text";
                         frameNumInput.id ="frameNumInput";
                         frameNumInput.value="5";
 
@@ -147,8 +178,9 @@ function audio_parser(audio_file){
                 var input_dr_p=document.createElement("p");
                 
                         /*dynamic range dB*/ 
-                        input_dr_p.innerHTML+="Dynamic Range : ";
+                        input_dr_p.innerHTML+="<label class='textinputlabel'>Dynamic Range : </label>";
                         var DRInput = document.createElement("input");
+                        DRInput.type="text";
                         DRInput.id ="DRInput";
                         DRInput.value="60";
 
@@ -157,44 +189,44 @@ function audio_parser(audio_file){
                 spec_ctrl_panel.appendChild(input_dr_p);
 
 
-                var preamphasis_check_p=document.createElement("p");
+                var preamphasis_check_p=document.createElement("div");
                 
                         
                         var pps_checkbox = document.createElement("input");
                         pps_checkbox.type="checkbox";
                         pps_checkbox.id ="pps_checkbox";
                         pps_checkbox.value="true";
+                        
                         preamphasis_check_p.appendChild(pps_checkbox);
-                        label_adder(preamphasis_check_p,"Perform Preamphasis(a=0.98) ? ");
-                        
-                        
+                        label_adder(preamphasis_check_p,"pps_checkbox","Perform Preamphasis(a=0.97) ? ");
+
 
                 spec_ctrl_panel.appendChild(preamphasis_check_p);
 
-                var elp_check_p=document.createElement("p");
+                var elp_check_p=document.createElement("div");
                 
                         
                         var elp_checkbox = document.createElement("input");
                         elp_checkbox.type="checkbox";
                         elp_checkbox.id ="elp_checkbox";
                         elp_checkbox.value="true";
+                        
                         elp_check_p.appendChild(elp_checkbox);
-                        label_adder(elp_check_p,"draw ESTIMATED envelope?");
-                        
-                        
+                        label_adder(elp_check_p,"elp_checkbox","draw ESTIMATED envelope?");
+ 
 
                 spec_ctrl_panel.appendChild(elp_check_p);
 
-                var fm_check_p=document.createElement("p");
+                var fm_check_p=document.createElement("div");
                 
                         
                         var fm_checkbox = document.createElement("input");
                         fm_checkbox.type="checkbox";
-                        fm_checkbox.id ="elp_checkbox";
+                        fm_checkbox.id ="fm_checkbox";
                         fm_checkbox.value="true";
-                        fm_check_p.appendChild(fm_checkbox);
-                        label_adder(fm_check_p,"Visualise Formants?");
                         
+                        fm_check_p.appendChild(fm_checkbox);
+                        label_adder(fm_check_p,"fm_checkbox","Visualise Formants?");
                         
 
                 spec_ctrl_panel.appendChild(fm_check_p);
@@ -207,7 +239,7 @@ function audio_parser(audio_file){
                         var config_btn = document.createElement("input");
                         config_btn.type="button";
                         config_btn.className="sub_feature_option";
-                        config_btn.id ="config_btn";
+                        config_btn.id ="spec_config_btn";
                         config_btn.value="Adjust";
                         config_btn_p.appendChild(config_btn);
 
@@ -215,24 +247,52 @@ function audio_parser(audio_file){
 
                 
 
+                
+                openModal();
+                
+                spectrum(audio_buffer,'Rectangular','Praat Power Spectrum Density',0,20,5,60,false,false,false);
 
-                spectrum(audio_buffer,'Rectangular','Praat Power Spectrum Density',20,5,60,false,false,false);
+                closeModal();
+
+                var spectra_time=[];
+
 
                 config_btn.onclick=function(){
-                    console.log(windowTypeSelect.value+","+frameLengthInput.value+","+frameNumInput.value+","+DRInput.value+","+pps_checkbox.checked);
-                    spectrum(audio_buffer,windowTypeSelect.value,SpectrumTypeSelect.value,parseInt(frameLengthInput.value),parseInt(frameNumInput.value),parseInt(DRInput.value),pps_checkbox.checked,elp_checkbox.checked,fm_checkbox.checked);
+
+                    
+
+                    
+                    var start_draw = new Date().getTime();
+                    
+                    openModal();
+                    spectrum(audio_buffer,windowTypeSelect.value,SpectrumTypeSelect.value,framestartInput.value,parseInt(frameLengthInput.value),parseInt(frameNumInput.value),parseInt(DRInput.value),pps_checkbox.checked,elp_checkbox.checked,fm_checkbox.checked);
+                    setTimeout(closeModal,1500*parseInt(frameNumInput.value)/100);
+                    var end_draw= new Date().getTime();
+                    var time_cost=(end_draw-start_draw)/1000;
+                    console.log("draw spectra time for the "+spectra_time.length+"th time:"+time_cost);
+                    spectra_time.push(time_cost);
+                    var time_sum=0;
+                    for(var i=0;i<spectra_time.length;i++){
+                        time_sum+=spectra_time[i];
+                    }
+                    var time_avg=time_sum/spectra_time.length;
+                    console.log("draw spectra time average for "+spectra_time.length+" times:"+time_avg);
+                    
+
+
                 }
                
             }
 
 
 
-
+            /*
             var sptg_group=add_button(panel_div,"sptg_btn","sptg_panel","Generate Spectrogram");
             sptg_group.this_btn.onclick=function(){
                 //alert("Generate Spectrogram");
                 
             }
+            */
             
 
            

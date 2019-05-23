@@ -134,10 +134,17 @@ function waveform(audio_buffer,zoom_ratio,zoom_start){
 
     }
 
-
-    var cursor_info=document.createElement("p");
-    cursor_info.innerHTML+="Current Value :";
-    wf_canvas_div.appendChild(cursor_info);
+    wf_canvas_div.appendChild(document.createElement("p"));
+    
+    var cursor_infor=document.createElement("div");
+    var cursor_infor_table=document.createElement("table");
+    cursor_infor_table.className="cursor_infor_table";
+        
+        two_cols_tr(cursor_infor_table,"Current Time",0);
+        two_cols_tr(cursor_infor_table,"Current Amplitude",0);
+        
+    cursor_infor.appendChild(cursor_infor_table);
+    wf_canvas_div.appendChild(cursor_infor);
 
     /*
     click, display the amplitude
@@ -148,38 +155,46 @@ function waveform(audio_buffer,zoom_ratio,zoom_start){
         let time=zoom_start/1+time_offset;
         let index_offset=Math.ceil((pos.x/c.width)*pixel_values.length);
 
-        console.log(time);
-        cursor_info.innerHTML="Current time and sound amplitude : " +time.toFixed(2)+","+pixel_values[index_offset].toFixed(2);
+        let tds=cursor_infor_table.querySelectorAll("td");
+
+        tds[0].innerHTML=time.toFixed(2);
+        tds[1].innerHTML=pixel_values[index_offset].toFixed(2);
     }
 
 
 
+    wf_canvas_div.appendChild(document.createElement("p"));
     
+    var wf_infor=document.createElement('div');
+    var wf_infor_table=document.createElement("table");
     
+        
+        two_cols_tr(wf_infor_table,"zoom ratio",zoom_ratio);
+        two_cols_tr(wf_infor_table,"min amplitude",Min);
+        two_cols_tr(wf_infor_table,"max amplitude",Max);
+        two_cols_tr(wf_infor_table,"Sampling Rate",audioSampleRate);
+        two_cols_tr(wf_infor_table,"Displayed Duration",displayed_duration+" From sec:"+ zoom_start)
 
+    wf_infor.appendChild(wf_infor_table);
+    wf_canvas_div.appendChild(wf_infor);
     
     
     
     /*
     a button to remove the current canvas
     */
+    var wf_clear_btn_p=document.createElement("p");
     var wf_clear_btn=document.createElement('input');
     wf_clear_btn.type="button";
+    wf_clear_btn.className="sub_feature_option";
     wf_clear_btn.value="Clear this graph";
     wf_clear_btn.onclick=function(){
         document.getElementById("wf_panel").innerHTML="";
     }
-    wf_canvas_div.appendChild( wf_clear_btn );
+    wf_clear_btn_p.appendChild(wf_clear_btn);
+    wf_canvas_div.appendChild( wf_clear_btn_p);
 
-    var wf_infor=document.createElement('p');
-    wf_infor.innerHTML=
-    "zoom ratio:" + zoom_ratio + "<br>" +
-    "min amplitude:"+Min+ "<br>" +
-    "max amplitude:"+Max+ "<br>" +
-    "Sampling Rate:" + audioSampleRate + "<br>" + 
-    "Displayed Duration:"+displayed_duration + " From sec:"+ zoom_start;
-
-    wf_canvas_div.appendChild(wf_infor);
+    
 
 
 
