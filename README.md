@@ -20,22 +20,22 @@ audio wav file:
 
 2. In the cloned directory, open index.html in Chrome/Firefox of recent versions.
 
-2. I put some wav. file already in ./sound_files , drag on of them into the
-   into the input block
+2. I've put some wav. file already in ./sound_files. Just drag of them into the
+   input block
 
 <p align="center">
 <img src="./imgs/1.gif"/> <br />
 Drag your input audio file
 </p>
 
-3. draw time-domain waveform :
+3. Draw time-domain waveform :
 
 <p align="center">
 <img src="./imgs/2.gif"/> <br />
 Drag your input audio file
 </p>
 
-4. draw frequency-domain features: spectrum. envelope. formants.
+4. Draw frequency-domain features: spectrum. envelope. formants.
 
 <p align="center">
 <img src="./imgs/3.gif"/> <br />
