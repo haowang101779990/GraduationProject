@@ -1,4 +1,4 @@
-# Drawing Audio Spectrum and Formants extraction by LPC on webs
+# Audio Spectrum and Formant Extraction by LPC on webs
 
 ## Get a glimpse of this project
 
@@ -7,8 +7,8 @@ audio wav file:
 
  - A sacalable time-domain waveform  
  - Custom frequency-domain spectra frame by frame 
- - Visualize the envelope and extract formants on the spectra 
-   through Levinson-Durbin LPC computation.
+ - Visualize the envelope of spectra and extract formants on the spectra 
+   through Levinson-Durbin LPC.
 
 ## Get your hands dirty with it! 
 
@@ -18,11 +18,11 @@ audio wav file:
   git clone https://github.com/haowang101779990/GraduationProject.git
 ```
 
-2. In the cloned directory, open index.html in Chrome/Firefox of recent versions.
+2. In the cloned directory, open index.html in Chrome/Firefox.
 
 ### Audio File input
    
-I've put some wav. file already in ./sound_files. Just drag of them into the
+I've put some wav. file already in ./sound_files. Just drag them into the
 input block
 
 <p align="center">
